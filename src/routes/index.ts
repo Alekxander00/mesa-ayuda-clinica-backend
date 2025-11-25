@@ -1,0 +1,15 @@
+// backend/src/routes/index.ts - CORREGIDO
+import { Router } from 'express';
+import authRoutes from './auth';
+import ticketRoutes from '../modules/tickets/tickets.routes';
+import { simpleAuth } from '../middlewares/simpleAuth'; // ✅ IMPORTAR MIDDLEWARE
+
+const router = Router();
+
+// Rutas públicas (sin autenticación)
+router.use('/api/auth', authRoutes);
+
+// ✅ APLICAR MIDDLEWARE A TODAS LAS RUTAS DE TICKETS
+router.use('/api/tickets', simpleAuth, ticketRoutes);
+
+export default router;
