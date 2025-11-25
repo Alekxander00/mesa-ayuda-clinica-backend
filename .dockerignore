@@ -7,6 +7,3 @@ README.md
 .nyc_output
 coverage
 .DS_Store
-.ts
-!src/**/
-!prisma/**/.ts
