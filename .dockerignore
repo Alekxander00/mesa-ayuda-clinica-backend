@@ -10,4 +10,3 @@ coverage
 .ts
 !src/**/
 !prisma/**/.ts
-tsconfig.json
