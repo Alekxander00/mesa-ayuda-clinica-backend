@@ -6,6 +6,7 @@ import { prisma } from './lib/prisma';
 import ticketRoutes from './modules/tickets/tickets.routes';
 import attachmentRoutes from './modules/attachments/attachments.routes';
 import { simpleAuth } from './middlewares/simpleAuth';
+import routes from './routes';
 import process from 'process';
 import { Request, Response, NextFunction } from 'express';
 
@@ -90,5 +91,7 @@ process.on('SIGTERM', async () => {
     process.exit(0);
   });
 });
+
+app.use('/', routes);
 
 export default app;
