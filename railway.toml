@@ -1,0 +1,10 @@
+[build]
+builder = "nixpacks"
+buildCommand = "npm install && npx prisma generate && npm run build"
+
+[deploy]
+startCommand = "npm start"
+
+[build.environment]
+PRISMA_CLI_QUERY_ENGINE_TYPE = "binary"
+PRISMA_CLIENT_ENGINE_TYPE = "binary"

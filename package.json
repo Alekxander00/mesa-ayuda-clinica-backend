@@ -5,10 +5,11 @@
   "main": "dist/app.js",
   "scripts": {
     "dev": "ts-node-dev src/app.ts",
-    "build": "npx tsc",
+    "build": "npx prisma generate && tsc",
     "start": "node dist/app.js",
     "db:push": "npx prisma db push",
-    "db:generate": "npx prisma generate"
+    "db:generate": "npx prisma generate",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^5.7.0",
@@ -32,5 +33,9 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "prisma": {
+    "schema": "prisma/schema.prisma",
+    "engineType": "binary"
   }
 }

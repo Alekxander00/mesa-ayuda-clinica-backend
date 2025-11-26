@@ -1,6 +1,7 @@
 // prisma/schema.prisma - CORREGIDO según tu SQL
 generator client {
   provider = "prisma-client-js"
+  engineType = "binary"
 }
 
 datasource db {

@@ -1,28 +1,25 @@
 FROM node:18-alpine
 
+# Instalar OpenSSL y otras dependencias necesarias
+RUN apk add --no-cache openssl
+
 WORKDIR /app
 
-# Copiar archivos de configuración
+# Copiar package.json e instalar dependencias
 COPY package*.json ./
-COPY tsconfig.json ./
-COPY prisma ./prisma/
-
-# Instalar TODAS las dependencias
 RUN npm install
 
-# Generar Prisma client (esto puede fallar sin DATABASE_URL, pero es necesario)
-RUN npx prisma generate || echo "Prisma generate falló, continuando..."
+# Copiar el resto de la aplicación
+COPY . .
 
-# Copiar código fuente
-COPY src ./src
+# Generar Prisma client
+RUN npx prisma generate
 
-# Compilar TypeScript
-RUN npx tsc
+# Build de la aplicación
+RUN npm run build
 
-# Crear carpeta para uploads
-RUN mkdir -p uploads
+# Exponer puerto
+EXPOSE 3000
 
-EXPOSE 3001
-
-# Comando que primero hace db push y luego inicia la app
-CMD ["sh", "-c", "npx prisma db push && npm start"]
+# Comando de inicio
+CMD ["npm", "start"]
