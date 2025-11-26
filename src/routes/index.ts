@@ -2,6 +2,7 @@
 import { Router } from 'express';
 import authRoutes from './auth';
 import ticketRoutes from '../modules/tickets/tickets.routes';
+import authModuleRoutes from '../modules/auth/auth.routes';
 import { simpleAuth } from '../middlewares/simpleAuth'; // ✅ IMPORTAR MIDDLEWARE
 import path from 'path';
 import process from 'process';
@@ -13,6 +14,8 @@ const router = Router();
 router.use('/api/auth', authRoutes);
 
 // ✅ APLICAR MIDDLEWARE A TODAS LAS RUTAS DE TICKETS
+router.use('/api/tickets', simpleAuth, ticketRoutes);
+router.use('/api/auth', authModuleRoutes);
 router.use('/api/tickets', simpleAuth, ticketRoutes);
 
 export default router;
