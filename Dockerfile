@@ -1,4 +1,4 @@
-FROM node:18-bullseye
+FROM node:18-alpine
 
 WORKDIR /app
 
@@ -6,10 +6,6 @@ WORKDIR /app
 COPY package*.json ./
 COPY tsconfig.json ./
 COPY prisma ./prisma/
-COPY start.sh ./
-
-# Dar permisos al script
-RUN chmod +x start.sh
 
 # Instalar dependencias
 RUN npm install
@@ -26,7 +22,7 @@ RUN npx tsc
 # Crear carpeta para uploads
 RUN mkdir -p uploads
 
-EXPOSE 3001
+EXPOSE 3000  # Esto es solo documentación, Railway ignora EXPOSE
 
-# Usar el script de inicio
-CMD ["./start.sh"]
+# ✅ COMANDO CORRECTO para Railway
+CMD ["npm", "start"]

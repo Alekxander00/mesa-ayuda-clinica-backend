@@ -13,6 +13,8 @@ import { Request, Response, NextFunction } from 'express';
 const currentDir = __dirname;
 const app = express();
 
+
+
 // Middlewares
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
@@ -39,7 +41,11 @@ app.get('/health', (req, res) => {
   res.status(200).json({ 
     status: 'OK', 
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV 
+    environment: process.env.NODE_ENV,
+    port: process.env.PORT,
+    platform: process.platform,
+    memory: process.memoryUsage(),
+    uptime: process.uptime()
   });
 });
 
@@ -68,6 +74,11 @@ const server = app.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
   console.log(`🌍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
   console.log(`📊 Health check: http://localhost:${PORT}/health`);
+  console.log('🔧 CONFIGURACIÓN DEL SERVIDOR:');
+console.log('PORT variable:', process.env.PORT);
+console.log('PORT final:', PORT);
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('DATABASE_URL:', process.env.DATABASE_URL ? '✅ Configurada' : '❌ No configurada');
 });
 
 // Graceful shutdown
