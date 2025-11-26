@@ -1,4 +1,4 @@
-FROM node:18-bullseye  # Usamos Debian en lugar de Alpine
+FROM node:18-bullseye
 
 WORKDIR /app
 
@@ -6,6 +6,10 @@ WORKDIR /app
 COPY package*.json ./
 COPY tsconfig.json ./
 COPY prisma ./prisma/
+COPY start.sh ./
+
+# Dar permisos al script
+RUN chmod +x start.sh
 
 # Instalar dependencias
 RUN npm install
@@ -24,5 +28,5 @@ RUN mkdir -p uploads
 
 EXPOSE 3001
 
-# Comando de inicio mejorado
-CMD ["sh", "-c", "npx prisma db push --skip-generate && npm start"]
+# Usar el script de inicio
+CMD ["./start.sh"]
