@@ -7,7 +7,7 @@
     "dev": "ts-node-dev src/app.ts",
     "build": "npx prisma generate && tsc",
     "start": "node dist/app.js",
-    "db:push": "npx prisma db push",
+    "db:push": "npx prisma db push --skip-generate",
     "db:generate": "npx prisma generate",
     "postinstall": "prisma generate"
   },
