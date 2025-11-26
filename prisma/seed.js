@@ -1,7 +1,11 @@
 // backend/prisma/seed.js
 const { PrismaClient, UserRole } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
+import path from 'path';
+import process from 'process';
 
+
+const currentDir = __dirname;
 const prisma = new PrismaClient();
 
 async function main() {

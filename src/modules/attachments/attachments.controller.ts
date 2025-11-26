@@ -3,7 +3,9 @@ import { Request, Response } from 'express';
 import { prisma } from '../../lib/prisma';
 import path from 'path';
 import fs from 'fs';
+import process from 'process';
 
+const currentDir = __dirname;
 export const getTicketAttachments = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

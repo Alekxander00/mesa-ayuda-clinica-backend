@@ -1,7 +1,10 @@
 // backend/src/modules/auth/auth.controller.ts - NUEVO ARCHIVO
 import { Request, Response } from 'express';
 import { prisma } from '../../lib/prisma';
+import path from 'path';
+import process from 'process';
 
+const currentDir = __dirname;
 // Sincronizar usuario con el backend
 export async function syncUser(req: Request, res: Response) {
   try {

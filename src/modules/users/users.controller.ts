@@ -1,7 +1,12 @@
 // backend/src/modules/users/users.controller.ts - COMPLETO CON EXPORTACIONES
 import { Request, Response } from 'express';
 import { prisma } from '../../lib/prisma';
+import path from 'path';
+import process from 'process';
 
+
+
+const currentDir = __dirname;
 // ✅ CORREGIDO: Todas las funciones exportadas
 export async function getUsers(req: Request, res: Response) {
   try {

@@ -1,9 +1,11 @@
 // backend/src/middlewares/upload.ts - CONFIGURACIÓN MULTER COMPLETA
 import multer from 'multer';
 import path from 'path';
+import process from 'process';
 import { Request } from 'express';
 import fs from 'fs';
 
+const currentDir = __dirname;
 // Asegurar que la carpeta uploads existe
 const uploadsDir = 'uploads';
 if (!fs.existsSync(uploadsDir)) {

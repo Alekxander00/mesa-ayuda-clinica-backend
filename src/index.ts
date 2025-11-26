@@ -1,6 +1,10 @@
 // backend/src/index.ts
 import app from './app';
 import { prisma } from './lib/prisma';
+import path from 'path';
+import process from 'process';
+
+const currentDir = __dirname;
 
 const PORT = process.env.PORT || 3001;
 

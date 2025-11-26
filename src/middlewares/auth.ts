@@ -1,6 +1,10 @@
 // backend/src/middlewares/auth.ts - CORREGIDO
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../lib/prisma';
+import path from 'path';
+import process from 'process';
+
+const currentDir = __dirname;
 
 export async function verifyUserHeader(req: Request, res: Response, next: NextFunction) {
   try {

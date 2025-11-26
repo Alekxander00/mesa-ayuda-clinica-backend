@@ -1,6 +1,10 @@
 // backend/src/modules/users/users.service.ts
 import { prisma } from '../../lib/prisma';
+import path from 'path';
+import process from 'process';
 
+// Para __dirname, usa:
+const currentDir = __dirname;
 export class UsersService {
   async getUsers() {
     return await prisma.user.findMany({

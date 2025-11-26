@@ -1,5 +1,9 @@
 // backend/src/lib/prisma.ts
 import { PrismaClient } from '@prisma/client'
+import path from 'path';
+import process from 'process';
+
+const currentDir = __dirname;
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;

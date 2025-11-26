@@ -1,9 +1,13 @@
 // backend/src/modules/tickets/tickets.service.ts
 import { prisma } from '../../lib/prisma';
+import path from 'path';
+import process from 'process';
+
 // Define tus propios tipos localmente
 type UserRole = 'user' | 'technician' | 'admin' | 'auditor';
 type TicketStatus = 'open' | 'pending' | 'in_progress' | 'resolved' | 'closed';
 
+const currentDir = __dirname;
 export interface CreateTicketData {
   code: string;
   user_id: string;

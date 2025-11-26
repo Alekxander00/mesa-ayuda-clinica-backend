@@ -1,9 +1,12 @@
 // backend/src/routes/auth.ts - SOLO AUTENTICACIÓN
 import { Router } from 'express';
+import path from 'path';
+import process from 'process';
 import { prisma } from '../lib/prisma';
 
 const router = Router();
 
+const currentDir = __dirname;
 // Endpoint para obtener usuario actual
 router.get('/me', async (req, res) => {
   try {

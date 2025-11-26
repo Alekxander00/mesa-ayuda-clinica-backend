@@ -1,7 +1,10 @@
 // backend/src/middlewares/simpleAuth.ts - MEJORADO CON SISTEMA DE ROLES
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../lib/prisma';
+import path from 'path';
+import process from 'process';
 
+const currentDir = __dirname;
 export async function simpleAuth(req: Request, res: Response, next: NextFunction) {
   try {
     const userEmail = req.headers['x-user-email'] as string;

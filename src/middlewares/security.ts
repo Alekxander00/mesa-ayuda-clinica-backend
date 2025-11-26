@@ -1,6 +1,9 @@
 // backend/src/middlewares/security.ts - NUEVO ARCHIVO
 import { Request, Response, NextFunction } from 'express';
+import path from 'path';
+import process from 'process';
 
+const currentDir = __dirname;
 // Middleware para logging de seguridad
 export function securityLogger(req: Request, res: Response, next: NextFunction) {
   const user = (req as any).user;

@@ -1,5 +1,8 @@
 // backend/src/lib/types.ts
 import { UserRole } from '@prisma/client';
+import path from 'path';
+import process from 'process';
+const currentDir = __dirname;
 
 // Helper para convertir strings a UserRole de forma segura
 export function toUserRole(role: string): UserRole {

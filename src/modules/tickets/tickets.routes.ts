@@ -1,5 +1,7 @@
 // backend/src/modules/tickets/tickets.routes.ts - ACTUALIZADO
 import { Router } from 'express';
+import path from 'path';
+import process from 'process';
 import { 
   getTickets, 
   getTicket, 
@@ -17,6 +19,7 @@ import {
 } from '../attachments/attachments.controller';
 import { upload, handleUploadError } from '../../middlewares/upload';
 
+const currentDir = __dirname;
 const router = Router();
 
 // Rutas de tickets

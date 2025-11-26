@@ -8,7 +8,11 @@ import {
   getUserStats
 } from './users.controller';
 import { requireAdmin, requireTechnician } from '../../middlewares/roleAuth';
+import path from 'path';
+import process from 'process';
 
+// Para __dirname, usa:
+const currentDir = __dirname;
 const router = Router();
 
 // Solo admin puede gestionar usuarios

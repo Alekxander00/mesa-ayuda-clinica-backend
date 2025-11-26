@@ -2,7 +2,10 @@
 import { Router } from 'express';
 import { debugAuth, syncUser, getUserInfo, listUsers } from './auth.controller';
 import { simpleAuth } from '../../middlewares/simpleAuth';
+import path from 'path';
+import process from 'process';
 
+const currentDir = __dirname;
 const router = Router();
 
 // Endpoints públicos

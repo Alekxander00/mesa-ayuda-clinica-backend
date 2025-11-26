@@ -2,6 +2,9 @@
 import { prisma } from '../../lib/prisma';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import path from 'path';
+import process from 'process';
+const currentDir = __dirname;
 
 export class AuthService {
   async login(email: string, password: string) {

@@ -6,7 +6,11 @@ import { prisma } from './lib/prisma';
 import ticketRoutes from './modules/tickets/tickets.routes';
 import attachmentRoutes from './modules/attachments/attachments.routes';
 import { simpleAuth } from './middlewares/simpleAuth';
+import process from 'process';
+import { Request, Response, NextFunction } from 'express';
 
+
+const currentDir = __dirname;
 const app = express();
 
 // Middlewares

@@ -1,6 +1,9 @@
 // backend/src/modules/attachments/attachments.service.ts
 import { prisma } from '../../lib/prisma';
+import path from 'path';
+import process from 'process';
 
+const currentDir = __dirname;
 export class AttachmentsService {
   async createAttachment(attachmentData: {
     filename: string;

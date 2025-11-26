@@ -1,5 +1,7 @@
 // backend/src/modules/attachments/attachments.routes.ts - ARCHIVO COMPLETO
 import { Router } from 'express';
+import path from 'path';
+import process from 'process';
 import { 
   getTicketAttachments, 
   uploadAttachments, 
@@ -10,6 +12,7 @@ import {
 import { upload, handleUploadError } from '../../middlewares/upload';
 import { simpleAuth } from '../../middlewares/simpleAuth';
 
+const currentDir = __dirname;
 const router = Router();
 
 // ✅ RUTAS PÚBLICAS (requieren header x-user-email)

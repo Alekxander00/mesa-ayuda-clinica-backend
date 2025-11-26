@@ -3,7 +3,10 @@ import { Router } from 'express';
 import authRoutes from './auth';
 import ticketRoutes from '../modules/tickets/tickets.routes';
 import { simpleAuth } from '../middlewares/simpleAuth'; // ✅ IMPORTAR MIDDLEWARE
+import path from 'path';
+import process from 'process';
 
+const currentDir = __dirname;
 const router = Router();
 
 // Rutas públicas (sin autenticación)

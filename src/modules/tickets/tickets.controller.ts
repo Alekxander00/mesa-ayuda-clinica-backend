@@ -1,7 +1,10 @@
 // backend/src/modules/tickets/tickets.controller.ts - CORREGIDO
 import { Request, Response } from 'express';
 import { prisma } from '../../lib/prisma';
+import path from 'path';
+import process from 'process';
 
+const currentDir = __dirname;
 export async function getTickets(req: Request, res: Response) {
     try {
       const user = (req as any).user;
