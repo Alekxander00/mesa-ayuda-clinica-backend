@@ -1,3 +1,5 @@
+// backend/src/routes/index.ts
+
 import { Router } from 'express';
 import authRoutes from './auth'; // ✅ Solo authRoutes
 import ticketRoutes from '../modules/tickets/tickets.routes';
