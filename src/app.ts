@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // CORS configurado para desarrollo
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://mesa-ayuda-clinica-frontend.railway.app'],
+  origin: ['http://localhost:3000', 'https://mesa-ayuda-clinica-frontend-production.up.railway.app'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'x-user-email', 'Authorization']
