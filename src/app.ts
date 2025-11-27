@@ -1,38 +1,23 @@
-// backend/src/app.ts - ACTUALIZADO PARA PRODUCCIÓN
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { prisma } from './lib/prisma';
-import ticketRoutes from './modules/tickets/tickets.routes';
-import attachmentRoutes from './modules/attachments/attachments.routes';
-import { simpleAuth } from './middlewares/simpleAuth';
-import routes from './routes';
+import routes from './routes'; // ✅ IMPORTAR RUTAS
 import process from 'process';
-import { Request, Response, NextFunction } from 'express';
 
-
-const currentDir = __dirname;
 const app = express();
-
-
 
 // Middlewares
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// CORS configurado para producción
-const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? [
-        'https://tu-frontend.railway.app', // Reemplazar con tu URL de frontend
-        'https://mesa-ayuda-clinica.railway.app' // Ejemplo
-      ]
-    : ['http://localhost:3000'],
+// CORS configurado para desarrollo
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://mesa-ayuda-clinica-frontend.railway.app'],
   credentials: true,
-  optionsSuccessStatus: 200
-};
-
-app.use(cors(corsOptions));
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'x-user-email', 'Authorization']
+}));
 
 // Servir archivos estáticos (uploads)
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
@@ -43,16 +28,12 @@ app.get('/health', (req, res) => {
     status: 'OK', 
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
-    port: process.env.PORT,
-    platform: process.platform,
-    memory: process.memoryUsage(),
-    uptime: process.uptime()
+    message: 'Backend funcionando correctamente'
   });
 });
 
-// API Routes
-app.use('/api/tickets/attachments', simpleAuth, attachmentRoutes);
-app.use('/api/tickets', simpleAuth, ticketRoutes);
+// ✅ MONTAR TODAS LAS RUTAS DESDE EL ARCHIVO DE RUTAS
+app.use('/', routes);
 
 // Manejo de errores global
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -75,11 +56,6 @@ const server = app.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
   console.log(`🌍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
   console.log(`📊 Health check: http://localhost:${PORT}/health`);
-  console.log('🔧 CONFIGURACIÓN DEL SERVIDOR:');
-console.log('PORT variable:', process.env.PORT);
-console.log('PORT final:', PORT);
-console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('DATABASE_URL:', process.env.DATABASE_URL ? '✅ Configurada' : '❌ No configurada');
 });
 
 // Graceful shutdown
@@ -91,7 +67,5 @@ process.on('SIGTERM', async () => {
     process.exit(0);
   });
 });
-
-app.use('/', routes);
 
 export default app;
