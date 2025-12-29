@@ -1,11 +1,11 @@
-// backend/src/modules/auth/auth.controller.ts - NUEVO ARCHIVO
+// backend/src/modules/auth/auth.controller.ts - MODIFICADO
 import { Request, Response } from 'express';
 import { prisma } from '../../lib/prisma';
-import path from 'path';
-import process from 'process';
+import { EmailAuthService } from '../../service/emailAuth.service';
 
-const currentDir = __dirname;
-// Sincronizar usuario con el backend
+const emailAuthService = new EmailAuthService();
+
+// Sincronizar usuario con el backend - MODIFICADO
 export async function syncUser(req: Request, res: Response) {
   try {
     const { email, name } = req.body;
@@ -16,7 +16,22 @@ export async function syncUser(req: Request, res: Response) {
       return res.status(400).json({ error: 'Email es requerido' });
     }
 
-    // Buscar usuario existente
+    // 1. Verificar si el correo está autorizado
+    const isAuthorized = await emailAuthService.isEmailAuthorized(email);
+    
+    if (!isAuthorized) {
+      console.log(`❌ SYNC USER: Correo no autorizado: ${email}`);
+      return res.status(403).json({ 
+        error: 'Acceso no autorizado',
+        message: 'Tu correo no está en la lista de correos permitidos',
+        email: email
+      });
+    }
+
+    // 2. Obtener rol autorizado
+    const authorizedRole = await emailAuthService.getAuthorizedRole(email);
+    
+    // 3. Buscar usuario existente
     let user = await prisma.user.findUnique({
       where: { email },
       select: {
@@ -28,33 +43,16 @@ export async function syncUser(req: Request, res: Response) {
       },
     });
 
-    // Si el usuario no existe, crearlo con sistema de roles
+    // 4. Si no existe, crearlo con el rol autorizado
     if (!user) {
-      console.log('🆕 SYNC USER: Usuario no existe, creando nuevo...');
+      console.log('🆕 SYNC USER: Creando nuevo usuario con rol autorizado:', authorizedRole);
       
-      const userCount = await prisma.user.count();
-      let defaultRole: 'user' | 'technician' | 'admin' = 'user';
-
-      if (userCount === 0) {
-        defaultRole = 'admin';
-        console.log('👑 Primer usuario - Asignando rol: admin');
-      } else if (userCount === 1) {
-        defaultRole = 'technician';
-        console.log('🔧 Segundo usuario - Asignando rol: technician');
-      } else if (email.includes('admin') || email.includes('administrador')) {
-        defaultRole = 'admin';
-        console.log('👑 Usuario admin detectado por email');
-      } else if (email.includes('tech') || email.includes('soporte') || email.includes('tecnico')) {
-        defaultRole = 'technician';
-        console.log('🔧 Usuario technician detectado por email');
-      }
-
       user = await prisma.user.create({
         data: {
           email,
           name: name || email.split('@')[0],
           password_hash: 'oauth-google',
-          role: defaultRole,
+          role: authorizedRole as any || 'user', // Usar rol autorizado o 'user' por defecto
           email_verified: true,
         },
         select: {

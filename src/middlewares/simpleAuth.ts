@@ -1,10 +1,11 @@
-// backend/src/middlewares/simpleAuth.ts - MEJORADO CON SISTEMA DE ROLES
+// backend/src/middlewares/simpleAuth.ts - MODIFICADO CON VERIFICACIÓN DE CORREOS AUTORIZADOS
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../lib/prisma';
 import path from 'path';
 import process from 'process';
 
 const currentDir = __dirname;
+
 export async function simpleAuth(req: Request, res: Response, next: NextFunction) {
   try {
     const userEmail = req.headers['x-user-email'] as string;
@@ -17,9 +18,25 @@ export async function simpleAuth(req: Request, res: Response, next: NextFunction
       return res.status(401).json({ error: 'No autenticado - falta email' });
     }
 
-    console.log('🔍 Buscando usuario en BD:', userEmail);
+    console.log('🔍 Verificando si el correo está autorizado...');
 
-    // Buscar usuario existente
+    // 1. PRIMERO: Verificar si el correo está en la lista de autorizados
+    const authorizedEmail = await prisma.authorizedEmail.findUnique({
+      where: { email: userEmail }
+    });
+
+    if (!authorizedEmail) {
+      console.log(`❌ Correo NO autorizado: ${userEmail}`);
+      return res.status(403).json({ 
+        error: 'Acceso no autorizado',
+        message: 'Tu correo no está en la lista de correos permitidos para este sistema',
+        email: userEmail
+      });
+    }
+
+    console.log('✅ Correo autorizado encontrado, rol asignado:', authorizedEmail.allowed_role);
+
+    // 2. Buscar usuario existente
     let user = await prisma.user.findUnique({
       where: { email: userEmail },
       select: {
@@ -31,48 +48,17 @@ export async function simpleAuth(req: Request, res: Response, next: NextFunction
       },
     });
 
-    console.log('👤 Usuario encontrado:', user);
-
-    // Si el usuario no existe, CREARLO automáticamente con sistema de roles
+    // 3. Si el usuario no existe, CREARLO con el rol de la lista autorizada
     if (!user) {
-      console.log('🆕 simpleAuth: Usuario no existe, creando nuevo...');
+      console.log('🆕 simpleAuth: Usuario no existe, creando nuevo con rol autorizado...');
       
-      // SISTEMA DE ROLES AUTOMÁTICO MEJORADO
-      const userCount = await prisma.user.count();
-      let defaultRole: 'user' | 'technician' | 'admin' = 'user';
-
-      // Primer usuario: admin
-      if (userCount === 0) {
-        defaultRole = 'admin';
-        console.log('👑 Primer usuario - Asignando rol: admin');
-      } 
-      // Segundo usuario: technician  
-      else if (userCount === 1) {
-        defaultRole = 'technician';
-        console.log('🔧 Segundo usuario - Asignando rol: technician');
-      }
-      // Emails específicos pueden ser admin (para testing)
-      else if (userEmail.includes('admin') || userEmail.includes('administrador')) {
-        defaultRole = 'admin';
-        console.log('👑 Usuario admin detectado por email');
-      }
-      // Emails específicos pueden ser technician
-      else if (userEmail.includes('tech') || userEmail.includes('soporte') || userEmail.includes('tecnico')) {
-        defaultRole = 'technician';
-        console.log('🔧 Usuario technician detectado por email');
-      }
-      // Por defecto: user
-      else {
-        console.log('👤 Usuario normal - Asignando rol: user');
-      }
-
       try {
         user = await prisma.user.create({
           data: {
             email: userEmail,
             name: userEmail.split('@')[0], // Nombre por defecto
             password_hash: 'oauth-google', // Placeholder para OAuth
-            role: defaultRole,
+            role: authorizedEmail.allowed_role, // Usar el rol de la lista autorizada
             email_verified: true,
           },
           select: {
@@ -84,7 +70,7 @@ export async function simpleAuth(req: Request, res: Response, next: NextFunction
           },
         });
 
-        console.log('✅ simpleAuth: Nuevo usuario creado:', user);
+        console.log('✅ simpleAuth: Nuevo usuario creado con rol autorizado:', user.role);
       } catch (createError) {
         console.error('❌ Error creando usuario:', createError);
         return res.status(500).json({ error: 'Error creando usuario' });
@@ -93,7 +79,7 @@ export async function simpleAuth(req: Request, res: Response, next: NextFunction
       console.log('✅ simpleAuth: Usuario existente encontrado - Rol:', user.role);
     }
 
-    // Agregar usuario al request
+    // 4. Agregar usuario al request
     (req as any).user = user;
     console.log('✅ simpleAuth: Usuario autenticado:', user.email, 'Rol:', user.role);
     next();
