@@ -1,18 +1,19 @@
-// backend/src/app.ts
+// backend/src/app.ts - MODIFICADO
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { prisma } from './lib/prisma';
-import routes from './routes'; // ✅ IMPORTAR RUTAS
+import routes from './routes';
 import process from 'process';
 import authorizedEmailsRouter from './modules/authorized-emails/authorizedEmails.routes';
+// Importar las rutas de auth
+import authRoutes from './modules/auth/auth.routes'; // Agregar esta línea
 
 const app = express();
 
 // Middlewares
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
-app.use('/api/authorized-emails', authorizedEmailsRouter);
 
 // CORS configurado para desarrollo
 app.use(cors({
@@ -34,6 +35,12 @@ app.get('/health', (req, res) => {
     message: 'Backend funcionando correctamente'
   });
 });
+
+// ✅ AGREGAR LAS RUTAS DE AUTH
+app.use('/api/auth', authRoutes);
+
+// ✅ RUTAS DE CORREOS AUTORIZADOS
+app.use('/api/authorized-emails', authorizedEmailsRouter);
 
 // ✅ MONTAR TODAS LAS RUTAS DESDE EL ARCHIVO DE RUTAS
 app.use('/', routes);

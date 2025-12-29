@@ -1,4 +1,4 @@
-// backend/src/services/emailAuth.service.ts - NUEVO ARCHIVO
+// backend/src/services/emailAuth.service.ts
 import { prisma } from '../lib/prisma';
 
 export class EmailAuthService {
