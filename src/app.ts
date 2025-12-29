@@ -5,12 +5,14 @@ import path from 'path';
 import { prisma } from './lib/prisma';
 import routes from './routes'; // ✅ IMPORTAR RUTAS
 import process from 'process';
+import authorizedEmailsRouter from './modules/authorized-emails/authorizedEmails.routes';
 
 const app = express();
 
 // Middlewares
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+app.use('/api/authorized-emails', authorizedEmailsRouter);
 
 // CORS configurado para desarrollo
 app.use(cors({
