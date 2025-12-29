@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { debugAuth, syncUser, getUserInfo, listUsers } from './auth.controller';
 import { simpleAuth } from '../../middlewares/simpleAuth';
 import { requireAdmin } from '../../middlewares/roleAuth';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '../../lib/prisma';
 
 const router = Router();
 
